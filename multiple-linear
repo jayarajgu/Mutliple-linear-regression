@@ -1,0 +1,62 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import plotly.express as px
+from mpl_toolkits.mplot3d import Axes3D
+df = pd.read_csv('clean_dataset.csv')
+df
+
+df.describe()
+
+df.isnull().sum()
+
+fig=plt.figure()
+x=df.Debt
+y=df.CreditScore
+ax = fig.add_subplot(111,projection = '3d')
+plt.title("Bivariate Plots")
+ax.scatter(x,y, linewidth=1,alpha=.7,edgecolor='k',s=200)
+ax.plot(x,y)
+
+sns.boxplot(df['Income'])
+
+df.describe()
+
+Q1 = df.Debt.quantile(0.25)
+Q3 = df.Debt.quantile(0.75)
+Q1, Q3
+
+IQR = Q3 - Q1
+IQR
+
+lower_limit = Q1 - 1.5 *IQR
+Upper_limit = Q3 + 1.5* IQR
+lower_limit, Upper_limit
+
+df[(df.Debt<lower_limit)|(df.Debt>Upper_limit)]
+
+for i in df['Income']:
+ Q1=df['Income'].quantile (0.25)
+ Q3=df['Income'].quantile (0.75)
+ IQR=Q3-Q1
+ Lower_tail=Q1-1.5*IQR
+ Upper_tail=Q3+1.5*IQR
+if i>Upper_tail or i < Lower_tail:
+ df['Income'] = df['Income'].replace(i, np.median(df['Income']))
+sns.boxplot(df['Income'])
+plt.title("Box Plot after median imputation")
+plt.show()
+
+if i>Upper_tail or i < Lower_tail:
+ df['Income'] = df['Income'].replace(i, np.mean(df['Income']))
+sns.boxplot(df['Income'])
+plt.title("Box Plot after mean imputation")
+plt.show()
+
+if i>Upper_tail or i < Lower_tail:
+ df['Income'] = df['Income'].replace(i, 0)
+sns.boxplot(df['Income'])
+plt.title("Box Plot after Zero imputation")
+plt.show()
+
